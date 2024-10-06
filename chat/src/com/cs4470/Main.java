@@ -12,10 +12,11 @@ public class Main {
     private static final List<Connection> connections = new ArrayList<>();
     private static int connectionIdCounter = 1;
 
-
     public static void main(String[] args) {
-	// write your code here
+	    // write your code here
         int port = 49153;
+        // this will pick the port
+//        int port = args.length > 0 ? Integer.parseInt(args[0]) : 49152;
 
         // start the server on a new thread
         new Thread(() -> startServer(port)).start();
