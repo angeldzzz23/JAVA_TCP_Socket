@@ -14,8 +14,8 @@ public class Main {
 
 
     public static void main(String[] args) {
-	// write your code here
-        int port = 49153;
+        // write your code here
+        int port = 49152;
 
         // start the server on a new thread
         new Thread(() -> startServer(port)).start();
@@ -75,7 +75,7 @@ public class Main {
                     }
                     break;
                 case "list":
-                     listConnections();
+                    listConnections();
                     break;
                 case "myip":
                     printMyIp();
@@ -241,7 +241,6 @@ public class Main {
             }
         }
     }
-
 
 
 }
