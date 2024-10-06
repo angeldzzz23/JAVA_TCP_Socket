@@ -11,18 +11,24 @@ public class Main {
 
     private static final List<Connection> connections = new ArrayList<>();
     private static int connectionIdCounter = 1;
+    private static int listeningPort;
 
-    public static void main(String[] args) {
+    // run this first
+    public static void main(String[] args) throws UnknownHostException {
 	    // write your code here
         int port = 49153;
         // this will pick the port
 //        int port = args.length > 0 ? Integer.parseInt(args[0]) : 49152;
+        listeningPort = port;
 
         // start the server on a new thread
         new Thread(() -> startServer(port)).start();
 
         commandLineInterface();
 
+
+//        InetAddress address = InetAddress.getLocalHost();
+//        System.out.println(address.getHostAddress());
     }
 
     private static void startServer(int port) {
@@ -82,6 +88,9 @@ public class Main {
                 case "myip":
                     printMyIp();
                     break;
+                case "myport":
+                    printMyPort();
+                    break;
                 case "send":
                     if (parts.length == 3) {
                         send(Integer.parseInt(parts[1]), parts[2]);
@@ -97,6 +106,9 @@ public class Main {
         }
     }
 
+    private static void printMyPort() {
+        System.out.println("Listening on port: " + listeningPort);
+    }
 
     private static void printHelp() {
         System.out.println("Available commands:");
