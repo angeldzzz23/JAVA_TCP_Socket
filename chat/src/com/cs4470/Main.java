@@ -9,6 +9,7 @@ import java.util.*;
 
 public class Main {
 
+    // this keeps track of all connections
     private static final List<Connection> connections = new ArrayList<>();
     private static int connectionIdCounter = 1;
     private static int listeningPort;
@@ -26,9 +27,6 @@ public class Main {
 
         commandLineInterface();
 
-
-//        InetAddress address = InetAddress.getLocalHost();
-//        System.out.println(address.getHostAddress());
     }
 
     private static void startServer(int port) {
@@ -201,6 +199,7 @@ public class Main {
         private final String address; // ip address
         private final int port; // port num
         // for writing
+
         private BufferedReader in;
         private PrintWriter out;
 
