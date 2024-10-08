@@ -33,3 +33,21 @@ java-tcp-chat-server/
 ├── README.md                    # Project documentation
 └── .gitignore                   # Git ignored files
 ```
+
+
+ # ChatServer.java
+
+	•	Initializes the server, listens on a specific port, and accepts connections.
+	•	Handles multiple clients by creating separate threads for each.
+	•	Relays messages between clients.
+
+# ClientHandler.java
+
+	•	Runs as a separate thread for each connected client.
+	•	Listens for incoming messages and forwards them to other clients.
+
+#  ChatClient.java
+
+	•	Manages the connection between a client and the server.
+	•	Sends user input to the server and displays incoming messages
+
