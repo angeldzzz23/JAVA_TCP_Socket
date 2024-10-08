@@ -19,6 +19,7 @@ This project is a TCP-based chat server implemented in Java. The server establis
 
 
 # Structure
+```
 java-tcp-chat-server/
 │
 ├── src/
@@ -31,3 +32,4 @@ java-tcp-chat-server/
 │
 ├── README.md                    # Project documentation
 └── .gitignore                   # Git ignored files
+```
