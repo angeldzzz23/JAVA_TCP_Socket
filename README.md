@@ -10,3 +10,24 @@ This project is a TCP-based chat server implemented in Java. The server establis
 - List active client connections.
 - broadcasting messages to all connected clients.
 - Command-line interface to manage connections and messages.
+
+# Technologies
+- Java SE
+- TCP/IP Sockets
+- Multi-threading
+- Command-line Interface (CLI)
+
+
+# Structure
+java-tcp-chat-server/
+│
+├── src/
+│   ├── server/
+│   │   ├── ChatServer.java      # Server class handling connections and messaging
+│   │   ├── ClientHandler.java   # Threaded class managing individual client
+│   │
+│   └── client/
+│       ├── ChatClient.java      # Client class for sending/receiving messages
+│
+├── README.md                    # Project documentation
+└── .gitignore                   # Git ignored files
