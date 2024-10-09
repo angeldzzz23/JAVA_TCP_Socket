@@ -315,37 +315,38 @@ public class Main {
         @Override
         public void run() {
 
-//            try {
-//                String receivedMessage;
-//
-//
-//                while ((receivedMessage = in.readLine()) != null) {
-//                    System.out.println("Message received from " + address + ":" + port + " - " + receivedMessage);
-//
-//                    // Remove peer who has shutdown by cmd received
+            try {
+                String receivedMessage;
+
+
+                while ((receivedMessage = in.readLine()) != null) {
+                    System.out.println("Message received from " + address + ":" + port + " - " + receivedMessage);
+
+                    // Remove peer who has shutdown by cmd received
 //                    if (receivedMessage.equals("shutdown")) {
 //                        System.out.println("Shutdown command received. Closing connection with peer...");
 //                        closeConnection();
 //                        connections.remove(this);
 //                        break;
 //                    }
-//                }
-////
+
+                }
 //
-//            } catch (SocketException e) {
-//
-//                System.out.println("Socket closed. Connection error with " + address + ":" + port);
-//            } catch (IOException e) {
-//                System.out.println("I/O error: " + e.getMessage());
-//                System.out.println("Connection error with " + address + ":" + port);
-//            } finally {
-//                try {
-//                    socket.close();
-//                } catch (IOException e) {
-//                    System.out.println("Error closing connection: " + e.getMessage());
-//                }
-//                connections.remove(this);
-//            }
+
+            } catch (SocketException e) {
+
+                System.out.println("Socket closed. Connection error with " + address + ":" + port);
+            } catch (IOException e) {
+                System.out.println("I/O error: " + e.getMessage());
+                System.out.println("Connection error with " + address + ":" + port);
+            } finally {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    System.out.println("Error closing connection: " + e.getMessage());
+                }
+                connections.remove(this);
+            }
 
 
 
