@@ -17,13 +17,34 @@ public class Main {
 
     // run this first
     public static void main(String[] args) throws UnknownHostException {
+
+        try {
+            String numberString = args[0];
+            Integer numberObject = Integer.valueOf(numberString);
+            int number = numberObject.intValue();
+            listeningPort = number;
+        } catch (Exception e) {
+
+            System.out.println("Invalid port");
+            System.exit(0);
+
+        }
+
+
+
+
+
+
+//        System.out.println();
+        // TODO: add the po
         // write your code here
-        int port = 49153;
-        // this will pick the port
-        listeningPort = port;
+
+
+//        // this will pick the port
+
 
         // start the server on a new thread
-        new Thread(() -> startServer(port)).start();
+        new Thread(() -> startServer(listeningPort)).start();
 
         commandLineInterface();
 
@@ -315,19 +336,17 @@ public class Main {
         @Override
         public void run() {
 
+            // to handle the last use cas
             if (socket == null) { return; }
-
 
             try {
                 String receivedMessage;
 
 
-
-
                 while ((receivedMessage = in.readLine()) != null) {
                     System.out.println("Message received from " + address + ":" + port + " - " + receivedMessage);
 
-                    
+
                 }
 //
 
