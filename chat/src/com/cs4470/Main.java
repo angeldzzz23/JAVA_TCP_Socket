@@ -224,7 +224,10 @@ public class Main {
                 .orElse(null);
         if (connection != null) {
             try {
-                connection.sendMessage("Connection is being terminated."); // Attempt to send a termination message
+                // Check if the socket is still open before sending a message
+                if (!connection.socket.isClosed()) {
+                    connection.sendMessage("Connection is being terminated.");
+                }
             } catch (Exception e) {
                 System.out.println("Failed to send termination message: " + e.getMessage());
             } finally {
@@ -311,32 +314,45 @@ public class Main {
 
         @Override
         public void run() {
-            try {
-                String receivedMessage;
-                while ((receivedMessage = in.readLine()) != null) {
-                    System.out.println("Message received from " + address + ":" + port + " - " + receivedMessage);
 
-                    //remove peer who has shutdown by cmd received
-                    if(receivedMessage.equals("shutdown")) {
-                        System.out.println("Shutdown command received. Closing connection with peer...");
-                        closeConnection();
-                        connections.remove(this);
-                        break;
+//            try {
+//                String receivedMessage;
+//
+//
+//                while ((receivedMessage = in.readLine()) != null) {
+//                    System.out.println("Message received from " + address + ":" + port + " - " + receivedMessage);
+//
+//                    // Remove peer who has shutdown by cmd received
+//                    if (receivedMessage.equals("shutdown")) {
+//                        System.out.println("Shutdown command received. Closing connection with peer...");
+//                        closeConnection();
+//                        connections.remove(this);
+//                        break;
+//                    }
+//                }
+////
+//
+//            } catch (SocketException e) {
+//
+//                System.out.println("Socket closed. Connection error with " + address + ":" + port);
+//            } catch (IOException e) {
+//                System.out.println("I/O error: " + e.getMessage());
+//                System.out.println("Connection error with " + address + ":" + port);
+//            } finally {
+//                try {
+//                    socket.close();
+//                } catch (IOException e) {
+//                    System.out.println("Error closing connection: " + e.getMessage());
+//                }
+//                connections.remove(this);
+//            }
 
-                    }
-                }
-            } catch (IOException e) {
-                //
-                System.out.println("Connection error with " + address + ":" + port);
-            } finally {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    System.out.println("Error closing connection: " + e.getMessage());
-                }
-                connections.remove (this);
-            }
+
+
         }
+
+
+
     }
 
 
