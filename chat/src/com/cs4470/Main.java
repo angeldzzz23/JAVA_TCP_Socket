@@ -20,7 +20,6 @@ public class Main {
         // write your code here
         int port = 49153;
         // this will pick the port
-//        int port = args.length > 0 ? Integer.parseInt(args[0]) : 49152;
         listeningPort = port;
 
         // start the server on a new thread
@@ -248,20 +247,11 @@ public class Main {
 
 
     private static void terminateAllConnections() {
-        Iterator<Connection> iterator = connections.iterator();
 
-        while( iterator.hasNext()) {
-            Connection connection = iterator.next();
-            try {
-                connection.sendMessage("shutdown");
-                connection.closeConnection();
-                System.out.println("Connection ID: " + connection.getId() + " has been terminated");
-                iterator.remove();
-            } catch (Exception e) {
-                System.out.println("Error terminating connection ID: " + connection.getId() + " - " + e.getMessage());
-            }
-
+        for (Connection connection : connections) {
+            terminateConnection(connection.id);
         }
+
     }
 
     // Inner class to handle individual connections
