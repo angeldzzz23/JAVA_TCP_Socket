@@ -6,18 +6,19 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Main {
 
     // this keeps track of all connections
-    private static final List<Connection> connections = new ArrayList<>();
+    private static final List<Connection> connections = new CopyOnWriteArrayList<>();
     private static int connectionIdCounter = 1;
     private static int listeningPort;
 
     // run this first
     public static void main(String[] args) throws UnknownHostException {
         // write your code here
-        int port = 5010;
+        int port = 49153;
         // this will pick the port
 //        int port = args.length > 0 ? Integer.parseInt(args[0]) : 49152;
         listeningPort = port;
@@ -99,6 +100,7 @@ public class Main {
                 case "terminate":
                     if(parts.length == 2){
                         terminateConnection(Integer.parseInt(parts[1]));
+
                     } else{
                         System.out.println("Usage: terminate <connection id>");
                     }
@@ -199,18 +201,40 @@ public class Main {
     }
 
     // Terminates connection with chosen connection
+//    private static void terminateConnection(int connectionId) {
+//        Connection connection = connections.stream()
+//                .filter(conn -> conn.getId() == connectionId)
+//                .findFirst()
+//                .orElse(null);
+//        if(connection != null){
+//            connection.sendMessage("Connection is being terminated.");
+//            System.out.println("Connection " + connectionId + " terminated.");
+//            connection.closeConnection();
+//            connections.remove(connection);
+//            //
+//        } else{
+//            System.out.println("Error: Connection ID" + connectionId + "not found.");
+//        }
+//    }
+    // angel updated function
+
     private static void terminateConnection(int connectionId) {
         Connection connection = connections.stream()
                 .filter(conn -> conn.getId() == connectionId)
                 .findFirst()
                 .orElse(null);
-        if(connection != null){
-            connection.sendMessage("Connection is being terminated.");
-            System.out.println("Connection " + connectionId + " terminated.");
-            connection.closeConnection();
-            connections.remove(connection);
-        } else{
-            System.out.println("Error: Connection ID" + connectionId + "not found.");
+        if (connection != null) {
+            try {
+                connection.sendMessage("Connection is being terminated."); // Attempt to send a termination message
+            } catch (Exception e) {
+                System.out.println("Failed to send termination message: " + e.getMessage());
+            } finally {
+                connection.closeConnection(); // Ensure the connection is closed
+                connections.remove(connection); // Remove it from the list
+                System.out.println("Connection " + connectionId + " terminated.");
+            }
+        } else {
+            System.out.println("Error: Connection ID " + connectionId + " not found.");
         }
     }
 
@@ -221,6 +245,8 @@ public class Main {
         System.exit(0);
     }
 
+
+
     private static void terminateAllConnections() {
         Iterator<Connection> iterator = connections.iterator();
 
@@ -229,7 +255,7 @@ public class Main {
             try {
                 connection.sendMessage("shutdown");
                 connection.closeConnection();
-                System.out.println("Connection ID: " +connection.getId() + " has been terminated");
+                System.out.println("Connection ID: " + connection.getId() + " has been terminated");
                 iterator.remove();
             } catch (Exception e) {
                 System.out.println("Error terminating connection ID: " + connection.getId() + " - " + e.getMessage());
@@ -237,6 +263,7 @@ public class Main {
 
         }
     }
+
     // Inner class to handle individual connections
     // this is the inner class that handle s
     private static class Connection implements Runnable {
@@ -291,7 +318,6 @@ public class Main {
             }
         }
 
-        //
 
         @Override
         public void run() {
@@ -310,6 +336,7 @@ public class Main {
                     }
                 }
             } catch (IOException e) {
+                //
                 System.out.println("Connection error with " + address + ":" + port);
             } finally {
                 try {
