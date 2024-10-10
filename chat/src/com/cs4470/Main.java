@@ -6,24 +6,29 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Main {
 
     // this keeps track of all connections
-    private static final List<Connection> connections = new ArrayList<>();
+    private static final List<Connection> connections = new CopyOnWriteArrayList<>();
     private static int connectionIdCounter = 1;
     private static int listeningPort;
 
     // run this first
     public static void main(String[] args) throws UnknownHostException {
-	    // write your code here
-        int port = 49153;
-        // this will pick the port
-//        int port = args.length > 0 ? Integer.parseInt(args[0]) : 49152;
-        listeningPort = port;
 
+        try {
+            String numberString = args[0];
+            Integer numberObject = Integer.valueOf(numberString);
+            int number = numberObject.intValue();
+            listeningPort = number;
+        } catch (Exception e) {
+            System.out.println("Invalid port");
+            System.exit(0);
+        }
         // start the server on a new thread
-        new Thread(() -> startServer(port)).start();
+        new Thread(() -> startServer(listeningPort)).start();
 
         commandLineInterface();
 
@@ -81,7 +86,7 @@ public class Main {
                     }
                     break;
                 case "list":
-                     listConnections();
+                    listConnections();
                     break;
                 case "myip":
                     printMyIp();
@@ -96,8 +101,16 @@ public class Main {
                         System.out.println("Usage: send <connection id> <message>");
                     }
                     break;
+                case "terminate":
+                    if(parts.length == 2){
+                        terminateConnection(Integer.parseInt(parts[1]));
+
+                    } else{
+                        System.out.println("Usage: terminate <connection id>");
+                    }
+                    break;
                 case "exit":
-                    System.exit(0);
+                    exit();
                 default:
                     System.out.println("Unknown command. Type 'help' for available commands.");
             }
@@ -114,6 +127,7 @@ public class Main {
         System.out.println("  connect <destination> <port>   - Establish a new connection");
         System.out.println("  list                           - List all active connections");
         System.out.println("  send <connection id> <message> - Send a message to a specific connection");
+        System.out.println("  terminate <connection id>      - Terminate a connection");
         System.out.println("  exit                           - Exit the program");
     }
 
@@ -190,6 +204,63 @@ public class Main {
         }
     }
 
+    // Terminates connection with chosen connection
+//    private static void terminateConnection(int connectionId) {
+//        Connection connection = connections.stream()
+//                .filter(conn -> conn.getId() == connectionId)
+//                .findFirst()
+//                .orElse(null);
+//        if(connection != null){
+//            connection.sendMessage("Connection is being terminated.");
+//            System.out.println("Connection " + connectionId + " terminated.");
+//            connection.closeConnection();
+//            connections.remove(connection);
+//            //
+//        } else{
+//            System.out.println("Error: Connection ID" + connectionId + "not found.");
+//        }
+//    }
+    // angel updated function
+
+    private static void terminateConnection(int connectionId) {
+        Connection connection = connections.stream()
+                .filter(conn -> conn.getId() == connectionId)
+                .findFirst()
+                .orElse(null);
+        if (connection != null) {
+            try {
+                // Check if the socket is still open before sending a message
+                if (!connection.socket.isClosed()) {
+                    connection.sendMessage("Connection is being terminated.");
+                }
+            } catch (Exception e) {
+                System.out.println("Failed to send termination message: " + e.getMessage());
+            } finally {
+                connection.closeConnection(); // Ensure the connection is closed
+                connections.remove(connection); // Remove it from the list
+                System.out.println("Connection " + connectionId + " terminated.");
+            }
+        } else {
+            System.out.println("Error: Connection ID " + connectionId + " not found.");
+        }
+    }
+
+    private static void exit() {
+        System.out.println("Broadcasting a shutdown message to peers");
+        terminateAllConnections();
+        System.out.println("Shutting Down peer...");
+        System.exit(0);
+    }
+
+
+
+    private static void terminateAllConnections() {
+
+        for (Connection connection : connections) {
+            terminateConnection(connection.id);
+        }
+
+    }
 
     // Inner class to handle individual connections
     // this is the inner class that handle s
@@ -235,15 +306,40 @@ public class Main {
             out.println(message);
         }
 
+        // Closes the socket connection
+        public void closeConnection() {
+            try{
+                socket.close();
+                System.out.println("Connection " + id + " closed.");
+            }catch(IOException e){
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+
 
         @Override
         public void run() {
+
+            // to handle the last use cas
+            if (socket == null) { return; }
+
             try {
                 String receivedMessage;
+
+
                 while ((receivedMessage = in.readLine()) != null) {
                     System.out.println("Message received from " + address + ":" + port + " - " + receivedMessage);
+
+
                 }
+//
+
+            } catch (SocketException e) {
+                // do nothing
+
+                return;
             } catch (IOException e) {
+                System.out.println("I/O error: " + e.getMessage());
                 System.out.println("Connection error with " + address + ":" + port);
             } finally {
                 try {
@@ -251,11 +347,13 @@ public class Main {
                 } catch (IOException e) {
                     System.out.println("Error closing connection: " + e.getMessage());
                 }
+                connections.remove(this);
             }
+
         }
+
     }
 
 
 
 }
-
