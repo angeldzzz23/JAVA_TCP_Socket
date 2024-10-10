@@ -24,25 +24,9 @@ public class Main {
             int number = numberObject.intValue();
             listeningPort = number;
         } catch (Exception e) {
-
             System.out.println("Invalid port");
             System.exit(0);
-
         }
-
-
-
-
-
-
-//        System.out.println();
-        // TODO: add the po
-        // write your code here
-
-
-//        // this will pick the port
-
-
         // start the server on a new thread
         new Thread(() -> startServer(listeningPort)).start();
 
@@ -366,11 +350,7 @@ public class Main {
                 connections.remove(this);
             }
 
-
-
         }
-
-
 
     }
 
