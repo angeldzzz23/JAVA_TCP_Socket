@@ -374,8 +374,9 @@ public class Main {
             out.println(connections.size() + 1);
             out.println(neighbors.size());
 
-            String localIp = InetAddress.getLocalHost().getHostAddress();
-            out.println(serverId + " " + localIp + " " + listeningPort);
+            for(Connection connection: connections){
+                out.println(connection.id + " " + connection.getAddress() + " " + connection.getPort());
+            }
 
             for (Connection neighbor : neighbors) {
                 out.println(serverId + " " + neighbor.getId() + " " + Double.POSITIVE_INFINITY);
